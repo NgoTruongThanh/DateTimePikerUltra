@@ -38,6 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           DateTimePickerUltraDialog(
+            widget: const Icon(Icons.access_time_sharp),
             selectedDate: DateTime.now(),
             initialTime: TimeOfDay.now(),
             showDatePicker: true,
@@ -47,35 +48,6 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             iconColor: Colors.grey,
             color: Colors.orangeAccent,
-          ),
-          DateTimePickerUltraDropdown(
-            selectedDate: DateTime.now(),
-            initialTime: TimeOfDay.now(),
-            showDatePicker: true,
-            showTimePicker: true,
-            onPress: (DateTime dateTime) {
-              log(dateTime.toString());
-            },
-            iconColor: Colors.grey,
-            color: Colors.orangeAccent,
-          ),
-          TimeSelectorUltra(
-            selectedHour: 4,
-            selectedMinute: 32,
-            isAm: true,
-            iconColor: Colors.grey,
-            color: Colors.orangeAccent,
-            onChange: (TimeOfDay timeOfDay) {
-              log(timeOfDay.toString());
-            },
-          ),
-          DatePickerUltra(
-            selectedDate: DateTime.now(),
-            iconColor: Colors.grey,
-            color: Colors.orangeAccent,
-            onChange: (DateTime date) {
-              log(date.toString());
-            },
           ),
         ],
       ),

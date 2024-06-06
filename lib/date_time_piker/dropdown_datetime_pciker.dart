@@ -110,9 +110,9 @@ class _DateTimePickerUltraDropdownState
                     children: [
                       if (widget.showTimePicker)
                         TimeSelectorUltra(
+                          colorText:  Colors.black,
                           selectedHour: (widget.initialTime.hour % 12) + 1,
                           selectedMinute: widget.initialTime.minute,
-                          isAm: widget.initialTime.hour <= 12,
                           iconColor: widget.iconColor,
                           color: widget.color,
                           borderRadius: widget.borderRadius,

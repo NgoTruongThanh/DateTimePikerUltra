@@ -8,7 +8,6 @@ class DateTimePickerUltraDialog extends StatefulWidget {
   Color iconColor;
   Color dialogBoxColor;
   bool showDatePicker;
-  String title;
   Widget? titleWidget;
   bool showTimePicker;
   Function(DateTime)? onChangeDate;
@@ -18,12 +17,14 @@ class DateTimePickerUltraDialog extends StatefulWidget {
   double textBoxwidth;
   DateTime selectedDate;
   TimeOfDay initialTime;
-
+  Widget widget;
+  String titleCancel;
+  String titleConfirm;
+  Color colorText;
   DateTimePickerUltraDialog({
     super.key,
     this.showDatePicker = true,
     this.showTimePicker = true,
-    this.title = 'Tap here to open Date Time Dialog',
     this.titleWidget,
     this.onChangeDate,
     this.onChangeTime,
@@ -33,8 +34,12 @@ class DateTimePickerUltraDialog extends StatefulWidget {
     this.dialogBoxColor = Colors.white,
     this.borderRadius = 6,
     this.textBoxwidth = 60,
+    required this.widget,
     DateTime? selectedDate,
     TimeOfDay? initialTime,
+    this.titleCancel = "Cancel",
+    this.titleConfirm = "Confirm",
+    this.colorText = Colors.black
   })  : selectedDate = selectedDate ?? DateTime.now(),
         initialTime = initialTime ?? TimeOfDay.now() {
     // Set the default value for initialTime if it's not provided
@@ -79,9 +84,9 @@ class _DateTimePickerUltraDialogState extends State<DateTimePickerUltraDialog> {
                 children: [
                   if (widget.showTimePicker)
                     TimeSelectorUltra(
-                      selectedHour: (widget.initialTime.hour % 12) + 1,
+                      colorText: widget.colorText,
+                      selectedHour: (widget.initialTime.hour),
                       selectedMinute: widget.initialTime.minute,
-                      isAm: widget.initialTime.hour <= 12,
                       iconColor: widget.iconColor,
                       color: widget.color,
                       borderRadius: widget.borderRadius,
@@ -121,7 +126,7 @@ class _DateTimePickerUltraDialogState extends State<DateTimePickerUltraDialog> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Close'),
+                      child: Text(widget.titleCancel,style: const TextStyle(color: Colors.red),),
                     ),
                     const SizedBox(width: 10),
                     ElevatedButton(
@@ -132,7 +137,7 @@ class _DateTimePickerUltraDialogState extends State<DateTimePickerUltraDialog> {
                         }
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Done'),
+                      child:  Text(widget.titleConfirm,style: const TextStyle(color: Colors.blue),),
                     ),
                   ],
                 ),
@@ -148,15 +153,7 @@ class _DateTimePickerUltraDialogState extends State<DateTimePickerUltraDialog> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => _toggleDialog(context),
-      child: widget.titleWidget != null
-          ? widget.titleWidget!
-          : Container(
-              color: Colors.transparent,
-              child: Text(
-                widget.title,
-                style: const TextStyle(fontSize: 20),
-              ),
-            ),
+      child: widget.widget,
     );
   }
 
