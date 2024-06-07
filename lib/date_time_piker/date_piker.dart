@@ -4,32 +4,33 @@ import 'package:flutter/material.dart';
 class DatePickerUltra extends StatefulWidget {
   Color color;
   Color iconColor;
+  Color textColor;
   DateTime selectedDate;
   Function(DateTime) onChange;
   DatePickerUltra({
     super.key,
     required this.onChange,
     this.iconColor = Colors.grey,
-    this.color = Colors.orangeAccent,
+    this.color = Colors.white,
     DateTime? selectedDate,
+    this.textColor = Colors.black
   }) : selectedDate = selectedDate ?? DateTime.now();
   @override
   State<DatePickerUltra> createState() => _DatePickerUltraState();
 }
 
 class _DatePickerUltraState extends State<DatePickerUltra> {
-  OverlayEntry? _overlayEntry;
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Theme(
-        data: ThemeData(
-            colorScheme: ColorScheme.light(primary: widget.color),
-            iconButtonTheme: IconButtonThemeData(
-                style: ButtonStyle(
-                    iconColor: MaterialStatePropertyAll(widget.iconColor))),
-            iconTheme: IconThemeData(color: widget.iconColor)),
+        data: Theme.of(context).copyWith(
+      colorScheme: ColorScheme.dark(
+        primary: widget.color, // header background color
+        onPrimary: widget.textColor, // header text color
+        onSurface: widget.color,
+      )),
         child: CalendarDatePicker(
             initialDate: widget.selectedDate,
             firstDate: DateTime(1900),
@@ -47,9 +48,5 @@ class _DatePickerUltraState extends State<DatePickerUltra> {
     );
   }
 
-  @override
-  void dispose() {
-    _overlayEntry?.remove();
-    super.dispose();
-  }
+
 }
