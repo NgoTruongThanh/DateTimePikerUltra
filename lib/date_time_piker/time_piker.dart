@@ -51,38 +51,62 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
 
   void _incrementHour() {
     setState(() {
-      widget.selectedHour =widget.selectedHour == 24 ? 1 : (widget.selectedHour ) + 1;
+      widget.selectedHour =widget.selectedHour == 23 ? 1 : (widget.selectedHour ) + 1;
     });
     _controllerStart.text = widget.selectedHour.toString();
     _controllerStart.selection = TextSelection.fromPosition(TextPosition(offset: _controllerStart.text.length));
+    widget.onChange(getStringToTimeOfDay());
+
   }
 
   void _decrementHour() {
     setState(() {
       widget.selectedHour =
-          widget.selectedHour == 0 ? 24 : widget.selectedHour - 1;
+          widget.selectedHour == 0 ? 23 : widget.selectedHour - 1;
     });
     _controllerStart.text = widget.selectedHour.toString();
     _controllerStart.selection = TextSelection.fromPosition(TextPosition(offset: _controllerStart.text.length));
+    widget.onChange(getStringToTimeOfDay());
+
   }
 
   void _incrementMinute() {
     setState(() {
-      widget.selectedMinute = (widget.selectedMinute % 60) + 1;
+      widget.selectedMinute = (widget.selectedMinute % 59) + 1;
     });
     _controllerEnd.text = widget.selectedMinute.toString();
     _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
+    widget.onChange(getStringToTimeOfDay());
+
   }
 
   void _decrementMinute() {
     setState(() {
       widget.selectedMinute =
-          widget.selectedMinute == 0 ? 60 : widget.selectedMinute - 1;
+          widget.selectedMinute == 0 ? 59 : widget.selectedMinute - 1;
     });
     _controllerEnd.text = widget.selectedMinute.toString();
     _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
+    widget.onChange(getStringToTimeOfDay());
+
   }
 
+
+
+  TimeOfDay getStringToTimeOfDay() {
+    // Parse the input string to a DateTime object
+    DateTime date = DateFormat("HH:mm").parse(
+        "${widget.selectedHour}:${widget.selectedMinute}");
+
+    // Convert the DateTime object to a TimeOfDay object
+    TimeOfDay timeOfDay = TimeOfDay.fromDateTime(date);
+
+    // Call the onChange callback with the new TimeOfDay object
+    widget.onChange(timeOfDay);
+
+    // Return the TimeOfDay object
+    return timeOfDay;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +167,7 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                           }
                           _controllerStart.text = widget.selectedHour.toString();
                           _controllerStart.selection = TextSelection.fromPosition(TextPosition(offset: _controllerStart.text.length));
+                          widget.onChange(getStringToTimeOfDay());
                         },
                       ),
                     ),
@@ -220,6 +245,8 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                               widget.selectedMinute = 0;
                             });
                           }
+                          widget.onChange(getStringToTimeOfDay());
+
                           _controllerEnd.text = widget.selectedMinute.toString();
                           _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
                         },
