@@ -13,6 +13,9 @@ class TimeSelectorUltra extends StatefulWidget {
   Function(TimeOfDay) onChange;
   double borderRadius;
   double textBoxwidth;
+  String? titleHour;
+  String? titleMinute;
+
   TimeSelectorUltra(
       {super.key,
       this.selectedHour = 1,
@@ -22,24 +25,24 @@ class TimeSelectorUltra extends StatefulWidget {
       this.color = Colors.orangeAccent,
       this.borderRadius = 6,
       required this.colorText,
-      this.textBoxwidth = 60});
+      this.textBoxwidth = 60,
+      this.titleHour,
+      this.titleMinute
+      });
 
   @override
   State<TimeSelectorUltra> createState() => _TimeSelectorUltraState();
 }
 
 class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
-
   late TextEditingController _controllerStart;
   late TextEditingController _controllerEnd;
-
 
   @override
   void initState() {
     super.initState();
-    _controllerStart = TextEditingController(text: widget.selectedHour.toString());
-    _controllerEnd = TextEditingController(text: widget.selectedMinute.toString());
-
+    _controllerStart = TextEditingController(text: numberFormat(widget.selectedHour));
+    _controllerEnd = TextEditingController(text: numberFormat(widget.selectedMinute));
   }
 
   @override
@@ -51,52 +54,48 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
 
   void _incrementHour() {
     setState(() {
-      widget.selectedHour =widget.selectedHour == 23 ? 1 : (widget.selectedHour ) + 1;
+      widget.selectedHour = widget.selectedHour == 23 ? 1 : (widget.selectedHour) + 1;
     });
-    _controllerStart.text = widget.selectedHour.toString();
+    _controllerStart.text = numberFormat(widget.selectedHour);
     _controllerStart.selection = TextSelection.fromPosition(TextPosition(offset: _controllerStart.text.length));
     widget.onChange(getStringToTimeOfDay());
-
   }
 
   void _decrementHour() {
     setState(() {
-      widget.selectedHour =
-          widget.selectedHour == 0 ? 23 : widget.selectedHour - 1;
+      widget.selectedHour = widget.selectedHour == 0 ? 23 : widget.selectedHour - 1;
     });
-    _controllerStart.text = widget.selectedHour.toString();
+    _controllerStart.text = numberFormat(widget.selectedHour);
     _controllerStart.selection = TextSelection.fromPosition(TextPosition(offset: _controllerStart.text.length));
     widget.onChange(getStringToTimeOfDay());
-
   }
 
   void _incrementMinute() {
     setState(() {
       widget.selectedMinute = (widget.selectedMinute % 59) + 1;
     });
-    _controllerEnd.text = widget.selectedMinute.toString();
+    _controllerEnd.text = numberFormat(widget.selectedMinute);
     _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
     widget.onChange(getStringToTimeOfDay());
-
   }
 
   void _decrementMinute() {
     setState(() {
-      widget.selectedMinute =
-          widget.selectedMinute == 0 ? 59 : widget.selectedMinute - 1;
+      widget.selectedMinute = widget.selectedMinute == 0 ? 59 : widget.selectedMinute - 1;
     });
-    _controllerEnd.text = widget.selectedMinute.toString();
+    _controllerEnd.text = numberFormat(widget.selectedMinute);
     _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
     widget.onChange(getStringToTimeOfDay());
-
   }
 
-
+  String numberFormat(int number) {
+    NumberFormat formatter = NumberFormat("00");
+    return formatter.format(number);
+  }
 
   TimeOfDay getStringToTimeOfDay() {
     // Parse the input string to a DateTime object
-    DateTime date = DateFormat("HH:mm").parse(
-        "${widget.selectedHour}:${widget.selectedMinute}");
+    DateTime date = DateFormat("HH:mm").parse("${widget.selectedHour}:${widget.selectedMinute}");
 
     // Convert the DateTime object to a TimeOfDay object
     TimeOfDay timeOfDay = TimeOfDay.fromDateTime(date);
@@ -113,9 +112,7 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
     return Theme(
       data: ThemeData(
           colorScheme: ColorScheme.light(primary: widget.color),
-          iconButtonTheme: IconButtonThemeData(
-              style: ButtonStyle(
-                  iconColor: WidgetStatePropertyAll(widget.iconColor))),
+          iconButtonTheme: IconButtonThemeData(style: ButtonStyle(iconColor: WidgetStatePropertyAll(widget.iconColor))),
           iconTheme: IconThemeData(color: widget.iconColor)),
       child: Center(
         child: Padding(
@@ -123,8 +120,8 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-
-
+              Text(widget.titleHour??"Giờ :",style:const TextStyle(fontSize: 20),),
+              const SizedBox(width: 5,),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: widget.color, width: 1),
@@ -141,31 +138,29 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                         ),
-                        style:  TextStyle(fontSize: 24,color: widget.colorText),
+                        style: TextStyle(fontSize: 24, color: widget.colorText),
                         controller: _controllerStart,
                         textAlign: TextAlign.center,
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         keyboardType: TextInputType.number,
-                         onChanged: (value) {
+                        onChanged: (value) {
                           if (value.isNotEmpty) {
                             setState(() {
                               int newValue = int.parse(value);
                               if (newValue > 24) {
-                                widget.selectedHour = 24;
+                                widget.selectedHour = 23;
                               } else if (newValue < 1) {
                                 widget.selectedHour = 0;
                               } else {
                                 widget.selectedHour = newValue;
                               }
-
                             });
-                          }
-                          else{
+                          } else {
                             setState(() {
                               widget.selectedHour = 0;
                             });
                           }
-                          _controllerStart.text = widget.selectedHour.toString();
+                          _controllerStart.text = numberFormat(widget.selectedHour);
                           _controllerStart.selection = TextSelection.fromPosition(TextPosition(offset: _controllerStart.text.length));
                           widget.onChange(getStringToTimeOfDay());
                         },
@@ -191,8 +186,7 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                           ),
                           InkWell(
                             onTap: _decrementHour,
-                            child:
-                                const Icon(Icons.keyboard_arrow_down_rounded),
+                            child: const Icon(Icons.keyboard_arrow_down_rounded),
                           ),
                         ],
                       ),
@@ -200,10 +194,10 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              const Text(':',style: TextStyle(fontSize: 25),),
-              const SizedBox(width: 10),
 
+              const SizedBox(width: 10),
+              Text(widget.titleMinute??"Phút :",style: const TextStyle(fontSize: 20),),
+              const SizedBox(width: 5,),
               Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: widget.color, width: 1),
@@ -214,7 +208,6 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                 ),
                 child: Row(
                   children: [
-
                     SizedBox(
                       width: widget.textBoxwidth,
                       child: TextFormField(
@@ -225,29 +218,27 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                         textAlign: TextAlign.center,
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         keyboardType: TextInputType.number,
-                        style:  TextStyle(fontSize: 24,color: widget.colorText),
+                        style: TextStyle(fontSize: 24, color: widget.colorText),
                         onChanged: (value) {
                           if (value.isNotEmpty) {
                             setState(() {
                               int newValue = int.parse(value);
                               if (newValue > 60) {
-                                widget.selectedMinute = 60;
+                                widget.selectedMinute = 59;
                               } else if (newValue < 1) {
-                                widget.selectedMinute = 0;
+                                widget.selectedMinute = 00;
                               } else {
                                 widget.selectedMinute = newValue;
                               }
-
                             });
-                          }
-                          else{
+                          } else {
                             setState(() {
-                              widget.selectedMinute = 0;
+                              widget.selectedMinute = 00;
                             });
                           }
                           widget.onChange(getStringToTimeOfDay());
 
-                          _controllerEnd.text = widget.selectedMinute.toString();
+                          _controllerEnd.text = numberFormat(widget.selectedMinute);
                           _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
                         },
                       ),
@@ -272,8 +263,7 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                           ),
                           InkWell(
                             onTap: _decrementMinute,
-                            child:
-                                const Icon(Icons.keyboard_arrow_down_rounded),
+                            child: const Icon(Icons.keyboard_arrow_down_rounded),
                           ),
                         ],
                       ),

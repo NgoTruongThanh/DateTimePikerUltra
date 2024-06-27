@@ -75,7 +75,7 @@ class _DateTimePickerUltraDialogState extends State<DateTimePickerUltraDialog> {
         actionsPadding: const EdgeInsets.all(0),
         contentPadding: const EdgeInsets.all(6),
         content: SizedBox(
-          width: 300,
+          width: 350,
           child: Stack(
             children: [
               Column(
