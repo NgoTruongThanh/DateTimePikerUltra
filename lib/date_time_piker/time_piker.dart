@@ -15,7 +15,8 @@ class TimeSelectorUltra extends StatefulWidget {
   double textBoxwidth;
   String? titleHour;
   String? titleMinute;
-
+  int durationHour;
+  int durationMinute;
   TimeSelectorUltra(
       {super.key,
       this.selectedHour = 1,
@@ -27,7 +28,10 @@ class TimeSelectorUltra extends StatefulWidget {
       required this.colorText,
       this.textBoxwidth = 60,
       this.titleHour,
-      this.titleMinute
+      this.titleMinute,
+      this.durationHour =1,
+      this.durationMinute =5,
+
       });
 
   @override
@@ -54,7 +58,7 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
 
   void _incrementHour() {
     setState(() {
-      widget.selectedHour = widget.selectedHour == 23 ? 1 : (widget.selectedHour) + 1;
+      widget.selectedHour = widget.selectedHour == 23 ? 1 : (widget.selectedHour) + widget.durationHour;
     });
     _controllerStart.text = numberFormat(widget.selectedHour);
     _controllerStart.selection = TextSelection.fromPosition(TextPosition(offset: _controllerStart.text.length));
@@ -63,7 +67,7 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
 
   void _decrementHour() {
     setState(() {
-      widget.selectedHour = widget.selectedHour == 0 ? 23 : widget.selectedHour - 1;
+      widget.selectedHour = widget.selectedHour == 0 ? 23 : widget.selectedHour - widget.durationHour;
     });
     _controllerStart.text = numberFormat(widget.selectedHour);
     _controllerStart.selection = TextSelection.fromPosition(TextPosition(offset: _controllerStart.text.length));
@@ -72,7 +76,10 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
 
   void _incrementMinute() {
     setState(() {
-      widget.selectedMinute = (widget.selectedMinute % 59) + 1;
+      widget.selectedMinute = (widget.selectedMinute + widget.durationMinute) % 60;
+      if (widget.selectedMinute % widget.durationMinute != 0) {
+        widget.selectedMinute = ((widget.selectedMinute / widget.durationMinute).round() * widget.durationMinute) % 60;
+      }
     });
     _controllerEnd.text = numberFormat(widget.selectedMinute);
     _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
@@ -81,7 +88,13 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
 
   void _decrementMinute() {
     setState(() {
-      widget.selectedMinute = widget.selectedMinute == 0 ? 59 : widget.selectedMinute - 1;
+      widget.selectedMinute = (widget.selectedMinute - widget.durationMinute) % 60;
+      if (widget.selectedMinute < 0) {
+        widget.selectedMinute += 60;
+      }
+      if (widget.selectedMinute % widget.durationMinute != 0) {
+        widget.selectedMinute = ((widget.selectedMinute / widget.durationMinute).round() * widget.durationMinute) % 60;
+      }
     });
     _controllerEnd.text = numberFormat(widget.selectedMinute);
     _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
