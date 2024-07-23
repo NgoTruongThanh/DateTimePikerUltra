@@ -76,10 +76,9 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
 
   void _incrementMinute() {
     setState(() {
-      widget.selectedMinute = (widget.selectedMinute + widget.durationMinute) % 60;
-      if (widget.selectedMinute % widget.durationMinute != 0) {
-        widget.selectedMinute = ((widget.selectedMinute / widget.durationMinute).round() * widget.durationMinute) % 60;
-      }
+      widget.selectedMinute += widget.durationMinute;
+      widget.selectedMinute %= 60;
+      widget.selectedMinute = (widget.selectedMinute / widget.durationMinute).floor() * widget.durationMinute;
     });
     _controllerEnd.text = numberFormat(widget.selectedMinute);
     _controllerEnd.selection = TextSelection.fromPosition(TextPosition(offset: _controllerEnd.text.length));
@@ -88,12 +87,16 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
 
   void _decrementMinute() {
     setState(() {
-      widget.selectedMinute = (widget.selectedMinute - widget.durationMinute) % 60;
+      widget.selectedMinute -= widget.durationMinute;
       if (widget.selectedMinute < 0) {
         widget.selectedMinute += 60;
       }
+      widget.selectedMinute = (widget.selectedMinute / widget.durationMinute).ceil() * widget.durationMinute;
       if (widget.selectedMinute % widget.durationMinute != 0) {
-        widget.selectedMinute = ((widget.selectedMinute / widget.durationMinute).round() * widget.durationMinute) % 60;
+        widget.selectedMinute = ((widget.selectedMinute / widget.durationMinute).ceil() * widget.durationMinute) % 60;
+      }
+      if (widget.selectedMinute > 59) {
+        widget.selectedMinute = 0;
       }
     });
     _controllerEnd.text = numberFormat(widget.selectedMinute);
