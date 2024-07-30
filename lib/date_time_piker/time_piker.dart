@@ -17,6 +17,7 @@ class TimeSelectorUltra extends StatefulWidget {
   String? titleMinute;
   int durationHour;
   int durationMinute;
+  bool allowInput;
   TimeSelectorUltra(
       {super.key,
       this.selectedHour = 1,
@@ -31,7 +32,7 @@ class TimeSelectorUltra extends StatefulWidget {
       this.titleMinute,
       this.durationHour =1,
       this.durationMinute =5,
-
+      this.allowInput = true,
       });
 
   @override
@@ -159,6 +160,7 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                         textAlign: TextAlign.center,
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         keyboardType: TextInputType.number,
+                        enabled: widget.allowInput,
                         onChanged: (value) {
                           if (value.isNotEmpty) {
                             setState(() {
@@ -235,12 +237,14 @@ class _TimeSelectorUltraState extends State<TimeSelectorUltra> {
                         inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                         keyboardType: TextInputType.number,
                         style: TextStyle(fontSize: 24, color: widget.colorText),
+                        enabled: widget.allowInput,
                         onChanged: (value) {
                           if (value.isNotEmpty) {
                             setState(() {
                               int newValue = int.parse(value);
+                              newValue = (newValue / 5).round() * 5;
                               if (newValue > 60) {
-                                widget.selectedMinute = 59;
+                                widget.selectedMinute = 00;
                               } else if (newValue < 1) {
                                 widget.selectedMinute = 00;
                               } else {
